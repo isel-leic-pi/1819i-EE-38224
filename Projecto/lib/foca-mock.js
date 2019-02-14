@@ -155,9 +155,41 @@ class Foca {
     })
     }
 	
-	getAllGamesBetweenTwoDates(user_id,groupId,dateFrom,dateTo)
-	
+	getAllGamesBetweenTwoDates(user_id,groupId,dateFrom,dateTo){
+		  
+		return this.getGroupById(user_id,groupId)
+		.catch(err=>
+				Promise.reject({statusCode:404}
+		))
+		.then(body=> 
+			Promise.all(
+				body.teams.map(team=> teamsGames.find(t => t.id == team.id).matches)	
+			)
+		)
+		.then(matches => {
+			return matches
+				.reduce((accumulator, currentvalue) => accumulator.concat(currentvalue))
+				.sort((matchesX,matchesY)=> (new Date(matchesX.date)- new Date(matchesY.date)))
+			}
+		)
+		.catch(err=>
+				Promise.reject({statusCode:503}
+		))			
+		/*
+		grp.teams.forEach( team => {
+			teamsGames.forEach( t => {
+				if(t.id == team.id){
+					games.push(t.matches.reduce((accumulator, currentvalue) => accumulator.concat(currentvalue))
+						.sort((matchesX,matchesY)=> (new Date(matchesX.date)- new Date(matchesY.date))))
+				}
+			})
+		})
+		if(!games) return Promise.reject({statusCode:404})
+		return Promise.resolve(games)
+	*/
+	}
 }
+
 // ------------------CREATE GROUP SECTION
 // --------------------------------------------//
 const foca = {
@@ -1311,5 +1343,30 @@ const competitionTeams = {
     }
   ]
 }
+const teamsGames = [
+	{
+		"id": 755,
+		"matches":[	
+			{"id":247756,"competition":"UEFA Champions League","homeTeam":"GNK Dinamo Zagreb","awayTeam":"Hapoel Be'er Sheva FC","date":"2018-07-24T18:00:00Z","status":"FINISHED"},
+			{"id":247757,"competition":"UEFA Champions League","homeTeam":"Hapoel Be'er Sheva FC","awayTeam":"GNK Dinamo Zagreb","date":"2018-07-31T17:00:00Z","status":"FINISHED"},
+			{"id":248391,"competition":"UEFA Champions League","homeTeam":"Astana FK","awayTeam":"GNK Dinamo Zagreb","date":"2018-08-07T14:00:00Z","status":"FINISHED"},
+			{"id":248392,"competition":"UEFA Champions League","homeTeam":"GNK Dinamo Zagreb","awayTeam":"Astana FK","date":"2018-08-14T18:00:00Z","status":"FINISHED"},
+			{"id":249524,"competition":"UEFA Champions League","homeTeam":"BSC Young Boys","awayTeam":"GNK Dinamo Zagreb","date":"2018-08-22T19:00:00Z","status":"FINISHED"},
+			{"id":249525,"competition":"UEFA Champions League","homeTeam":"GNK Dinamo Zagreb","awayTeam":"BSC Young Boys","date":"2018-08-28T19:00:00Z","status":"FINISHED"}
+		]
+	},
+	{
+		"id": 756, //dummy
+		"matches":[	
+			{"id":247312,"competition":"dummy","homeTeam":"sgreb","awayTeam":"dheva FC","date":"2018-07-24T18:00:00Z","status":"FINISHED"},
+			{"id":242212,"competition":"dummy","homeTeam":"Hapoel Be'er Sheva FC","awayTeam":"sgreb","date":"2018-07-31T17:00:00Z","status":"FINISHED"},
+			{"id":248421,"competition":"dummy","homeTeam":"Astana FK","awayTeam":"sgreb","date":"2018-08-07T14:00:00Z","status":"FINISHED"},
+			{"id":211112,"competition":"dummy","homeTeam":"sgreb","awayTeam":"Astana FK","date":"2018-08-14T18:00:00Z","status":"FINISHED"},
+			{"id":249224,"competition":"dummy","homeTeam":"BSC Young Boys","awayTeam":"sgreb","date":"2018-08-22T19:00:00Z","status":"FINISHED"},
+			{"id":246625,"competition":"dummy","homeTeam":"sgreb","awayTeam":"BSC Young Boys","date":"2018-08-28T19:00:00Z","status":"FINISHED"}
+		]
+	}
+]
+
 
 module.exports = Foca
