@@ -24,7 +24,13 @@ module.exports = (divMain) => {
 		}
 		const compId = inputCompId.value
 		fetch(`http://localhost:3000/competitions/${compId}/teams`)
-			.then(res => res.json())
+			.then(res => {			
+				if(res.status == '503'){
+					util.showAlert('o serviço está em baixo')
+					return Promise.reject(new Error('o serviço está em baixo'))
+				}
+				return res.json()
+			})
 			.then(arr =>{
 				if(arr.teams == null)util.showAlert('não existe esta liga')
 				divSearchResults.innerHTML = searchTeamsFromLeague(arr.teams)

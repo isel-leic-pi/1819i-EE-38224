@@ -57,20 +57,34 @@ module.exports =  async (divMain) => {
 	function createGroupHandler(ev){
 		ev.preventDefault()
 		if(!inputGroupName.value ||  !inputDescriptionId.value){
-			util.showAlert('Preencha os campos Name e Description')
+			util.showAlert('Preencha os campos nome e descrição')
 		}
 		else{
 			fetch(`http://localhost:3000/foca/groups?name=${inputGroupName.value}&description=${inputDescriptionId.value}`, {method: 'POST'})
 			.then(res => {
-				if(res.status == '500'){
+				if(res.status == '409'){
 					util.showAlert('já existe um grupo com esse nome')
 					return Promise.reject(new Error('já existe um grupo com esse nome'))
+				}
+				if(res.status == '404'){ // precisamos de obter os grupos para verificar se o nome é duplicado
+					util.showAlert('não foi possível obter os grupos')
+					return Promise.reject(new Error('não foi possível obter os grupos'))
+				}
+				if(res.status == '503'){
+					util.showAlert('serviço em baixo')
+					return Promise.reject(new Error('serviço em baixo'))
 				}
 				return res.json()
 			})
 			.then(obj => {
 				fetch(`http://localhost:3000/foca/groups/${obj.id}`)
-				.then(ress=> ress.json())
+				.then(res=> {
+					if(res.status == '404'){
+					util.showAlert('o grupo não foi encontrado')
+					return Promise.reject(new Error('o grupo não foi encontrado'))
+					}
+					return res.json()
+				})
 				.then( objj => divSearchResults.innerHTML = showGroupInfo(objj)
 				//showAlert sucesso
 				)})
@@ -85,34 +99,70 @@ module.exports =  async (divMain) => {
 		}
 		else{
 			fetch(`http://localhost:3000/foca/groups/${inputGroupId.value}/copy/${inputGroupName.value}`, {method: 'POST'})
-			.then(res => res.json())
+			.then(res => {			
+				if(res.status == '404'){
+					util.showAlert('não existe o grupo a copiar')
+					return Promise.reject(new Error('não existe o grupo a copiar'))
+				}
+				if(res.status == '409'){
+					util.showAlert('já existe um grupo com esse nome')
+					return Promise.reject(new Error('já existe um grupo com esse nome'))
+				}
+				if(res.status == '503'){
+					util.showAlert('serviço em baixo')
+					return Promise.reject(new Error('serviço em baixo'))
+				}
+				return res.json()
+			})
 			.then(obj => {
-				console.log(JSON.stringify(obj))
 				fetch(`http://localhost:3000/foca/groups/${obj.id}`)
-				.then(ress=> ress.json())
+				.then(res=> {
+					if(res.status == '404'){
+					util.showAlert('o grupo não foi encontrado')
+					return Promise.reject(new Error('o grupo não foi encontrado'))
+					}
+					return res.json()
+				})
 				.then( objj => divSearchResults.innerHTML = showGroupInfo(objj)
-				//showAlert sucesso
-				)})
+			)})
 			.catch()
 		}
 	}
-	
-	
-	
+	 
 
 	function editGroupHandler(ev){
 		ev.preventDefault()
 		if(!inputGroupId.value || !inputGroupName.value ||  !inputDescriptionId.value){
-			util.showAlert('Preencha os campos groupId, name e Description')
+			util.showAlert('Preencha os campos groupId, nome e descrição')
 		}
 		else{
 			fetch(`http://localhost:3000/foca/groups/${inputGroupId.value}?name=${inputGroupName.value}&description=${inputDescriptionId.value}`, {method: 'PUT'})
-			.then(res => res.json())
+			.then(res => {			
+				if(res.status == '404'){
+					util.showAlert('não existe o grupo a editar')
+					return Promise.reject(new Error('não existe o grupo a editar'))
+				}
+				if(res.status == '409'){
+					util.showAlert('já existe um grupo com esse nome')
+					return Promise.reject(new Error('já existe um grupo com esse nome'))
+				}
+				if(res.status == '503'){
+					util.showAlert('serviço em baixo')
+					return Promise.reject(new Error('serviço em baixo'))
+				}
+				return res.json()
+			})
 			.then(obj => {
 				fetch(`http://localhost:3000/foca/groups/${obj.id}`)
-				.then(ress=> ress.json())
+				.then(res => {			
+				if(res.status == '404'){
+					util.showAlert('o grupo não foi encontrado')
+					return Promise.reject(new Error('o grupo não foi encontrado'))
+				}
+				return res.json()
+				})
 				.then( objj => {
-					if(objj.teams == null) util.showAlert('não existe o grupo especificado')
+					//if(objj.teams == null) util.showAlert('não existe o grupo especificado')
 					divSearchResults.innerHTML = showGroupInfo(objj)
 				}
 				)})
@@ -129,17 +179,24 @@ module.exports =  async (divMain) => {
 		else{
 			fetch(`http://localhost:3000/foca/groups/${inputGroupId.value}/competition/${competitionId.value}/team/${inputTeamId.value}`, {method: 'POST'})
 				.then(res => {
-					if(res.status == '500'){
-						util.showAlert('a equipa já se encontra inserida neste grupo')
-						return Promise.reject(new Error("a equipa já se encontra inserida neste grupo"))
+					if(res.status == '409'){
+						util.showAlert('já existe essa equipa neste grupo')
+						return Promise.reject('já existe essa equipa neste grupo')
 					}
 					return res.json()
 				})
 				.then(obj => {
 					fetch(`http://localhost:3000/foca/groups/${obj.id}`)
-					.then(ress=> ress.json())
+					.then(res => {			
+						if(res.status == '404'){
+							util.showAlert('o grupo não foi encontrado')
+							return Promise.reject(new Error('o grupo não foi encontrado'))
+						}
+	
+						return res.json()
+					})
 					.then( objj => {
-						if(objj.teams == null) util.showAlert('não existe o grupo especificado')
+						//if(objj.teams == null) util.showAlert('não existe o grupo especificado')
 						divSearchResults.innerHTML = showGroupInfo(objj)
 					}
 					)})
@@ -163,7 +220,13 @@ module.exports =  async (divMain) => {
 	 
 		if(!inputGroupId.value){
 		fetch(`http://localhost:3000/foca/groups`)
-			.then(res=>res.json())
+			.then(res => {			
+				if(res.status == '404'){
+					util.showAlert('os grupos não foram encontrados')
+					return Promise.reject(new Error('os grupos não foram encontrados'))
+				}
+				return res.json()
+			})
 			.then(obj => divSearchResults.innerHTML = showAllGroupInfo(obj.groups))
 			//	alert(JSON.stringify(obj.groups))
 			.catch(err => console.log(err))
@@ -173,9 +236,15 @@ module.exports =  async (divMain) => {
 
 		const groupId = inputGroupId.value
 		fetch(`http://localhost:3000/foca/groups/${groupId}`)
-			.then(res => res.json())
+			.then(res => {			
+				if(res.status == '404'){
+					util.showAlert('o grupo não foi encontrado')
+					return Promise.reject(new Error('o grupo não foi encontrado'))
+				}
+				return res.json()
+			})
 			.then(obj => {
-				if(obj.teams == null) util.showAlert('não existe o grupo especificado')
+				//if(obj.teams == null) util.showAlert('não existe o grupo especificado')
 				divSearchResults.innerHTML = showGroupInfo(obj)
 			})
 			.catch(err => console.log(err))

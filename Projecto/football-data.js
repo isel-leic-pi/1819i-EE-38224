@@ -45,14 +45,13 @@ class FootballData {
             'url' : `${this.footballDataAPI}/competitions/${id}/teams`,
             'json' : true,
             headers: {
-
                 'X-Auth-Token' :this.token
-
             }
         }
 
        return rp(options)
-        .then(body => { let ts = {}
+        .then(body => { 
+		let ts = {}
             ts.count = body.count
             ts.teams= []
             body.teams.forEach(t => {

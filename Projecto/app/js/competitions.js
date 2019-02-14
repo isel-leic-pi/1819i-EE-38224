@@ -17,7 +17,12 @@ module.exports = (divMain) => {
 	function searchHandler(ev){
 		ev.preventDefault()
 		fetch(`http://localhost:3000/competitions`)
-			.then(res => res.json())
+			.then(res =>{
+				if(res.status == '503'){
+					util.showAlert('o serviço está em baixo')
+					return Promise.reject(new Error('o serviço está em baixo'))
+				}
+			})
 			.then(arr => divSearchResults.innerHTML = searchCompetitions(arr.competitions))
 			.catch(err => console.log(err))
 	}

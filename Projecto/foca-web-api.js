@@ -45,7 +45,7 @@ module.exports = (app) => {
 
 		foca
 			.getCompetitions()
-			.then((body) =>{ 
+			.then(body =>{ 
 				resp.statusCode = 200
 				resp.end(JSON.stringify(body))})
 			.catch(next)
@@ -55,7 +55,7 @@ module.exports = (app) => {
 	function getGroups(req, resp,next) {
 		foca
 			.getGroups(req.user._id)
-			.then((body) =>{ 
+			.then(body =>{ 
 				resp.statusCode = 200
 				resp.end(JSON.stringify(body))})
 			.catch(next)	
@@ -65,7 +65,7 @@ module.exports = (app) => {
 		let id = req.params.id
 		foca 
 			.getGroupById(req.user._id,id)
-			.then((body) =>{ 
+			.then(body =>{ 
 				resp.statusCode = 200
 				resp.end(JSON.stringify(body))})
 			.catch(next)
@@ -75,7 +75,7 @@ module.exports = (app) => {
 		let id = req.params.id
 		foca
 		.getTeamsByCompetitionId(id)
-		.then((body) => { 
+		.then(body => { 
 			resp.statusCode = 200
 			resp.end(JSON.stringify(body))})
 		.catch(next)
@@ -86,19 +86,18 @@ module.exports = (app) => {
 		let description = req.query.description
 		foca
 		.createGroup(req.user._id,name, description)
-		.then((body) => { 
+		.then(body => { 
 			resp.statusCode = 200
 			resp.end(JSON.stringify(body))})
 		.catch(next)
 	}
 	
 	function insertGroupCopy(req, resp,next) {
-		console.log("iol2")
 		let id = req.params.id
 		let name = req.params.name
 		foca
 		.createGroupCopy(req.user._id,id,name)
-		.then((body) => { 
+		.then(body => { 
 			resp.statusCode = 200
 			resp.end(JSON.stringify(body))})
 		.catch(next)
@@ -111,7 +110,7 @@ module.exports = (app) => {
 		let description = req.query.description
 		foca
 			.editGroup(req.user._id,id, name, description)
-			.then((body) => { 
+			.then(body => { 
 				resp.statusCode = 200
 				resp.end(JSON.stringify(body))})
 			.catch(next)
@@ -125,7 +124,7 @@ module.exports = (app) => {
 
 		foca 
 			.insertTeamInGroup(req.user._id,groupId, compId, teamId)
-			.then((body) => { 
+			.then(body => { 
 				resp.statusCode = 200
 				resp.end(JSON.stringify(body))})
 			.catch(next)
@@ -138,7 +137,7 @@ module.exports = (app) => {
 
 		foca
 		.deleteGroupTeam(req.user._id,groupId, teamId)
-		.then((body) =>{ 
+		.then(body =>{ 
 			resp.statusCode = 200
 			resp.end(JSON.stringify(body))})
 		.catch(next)
@@ -152,7 +151,7 @@ module.exports = (app) => {
 		
 		foca
 			.getAllGamesBetweenTwoDates(req.user._id,groupId,dateFrom,dateTo)
-			.then((body) =>{ 
+			.then(body =>{ 
 				resp.statusCode = 200
 				resp.end(JSON.stringify(body))})
 			.catch(next)
