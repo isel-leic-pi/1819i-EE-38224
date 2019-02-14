@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "16f5f4aa-4166-4320-a0f9-5e832187d090",
+		"_postman_id": "4b3357eb-9068-4d56-bd5b-34667291281e",
 		"name": "FOCA_SERVICES",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -59,152 +59,6 @@
 		{
 			"name": "Users",
 			"item": [
-				{
-					"name": "Users",
-					"item": [
-						{
-							"name": "SignUp",
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"name": "Content-Type",
-										"value": "application/x-www-form-urlencoded",
-										"type": "text"
-									}
-								],
-								"body": {
-									"mode": "urlencoded",
-									"urlencoded": [
-										{
-											"key": "fullname",
-											"value": "teste 1",
-											"type": "text"
-										},
-										{
-											"key": "username",
-											"value": "teste 1",
-											"type": "text"
-										},
-										{
-											"key": "password",
-											"value": "12345",
-											"type": "text"
-										}
-									]
-								},
-								"url": {
-									"raw": "http://localhost:3000/foca/auth/signup",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "3000",
-									"path": [
-										"foca",
-										"auth",
-										"signup"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "logout",
-							"request": {
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
-								"url": {
-									"raw": "http://localhost:3000/foca/auth/logout",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "3000",
-									"path": [
-										"foca",
-										"auth",
-										"logout"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "login",
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"name": "Content-Type",
-										"value": "application/x-www-form-urlencoded",
-										"type": "text"
-									}
-								],
-								"body": {
-									"mode": "urlencoded",
-									"urlencoded": [
-										{
-											"key": "username",
-											"value": "teste 1",
-											"type": "text"
-										},
-										{
-											"key": "password",
-											"value": "12345",
-											"type": "text"
-										}
-									]
-								},
-								"url": {
-									"raw": "http://localhost:3000/foca/auth/login",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "3000",
-									"path": [
-										"foca",
-										"auth",
-										"login"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Show users",
-							"request": {
-								"method": "GET",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
-								"url": {
-									"raw": "http://localhost:9200/users/_search",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "9200",
-									"path": [
-										"users",
-										"_search"
-									]
-								}
-							},
-							"response": []
-						}
-					],
-					"_postman_isSubFolder": true
-				},
 				{
 					"name": "SignUp",
 					"request": {
@@ -365,17 +219,6 @@
 							"    pm.expect(jsonData.competitions[0].id).to.eql(2006);\r",
 							"    pm.expect(jsonData.competitions[0].name).to.eql(\"Africa\");\r",
 							"    pm.expect(jsonData.competitions[0].description).to.eql(\"WC Qualification\");\r",
-							"});\r",
-							"pm.test(\"Test expecting competitions ids : 2006,2025, 2023,\", function () {\r",
-							"    var jsonData = pm.response.json();\r",
-							"    var idList = [];\r",
-							"    jsonData.competitions.forEach(c => {\r",
-							"        idList.push(c.id);\r",
-							"    });\r",
-							"    pm.expect(idList[0]).to.eql(2006);\r",
-							"    pm.expect(idList[1]).to.eql(2025);\r",
-							"    pm.expect(idList[2]).to.eql(2023);\r",
-							"    \r",
 							"});\r",
 							"\r",
 							"pm.test(\"Status code is 200\", function () {\r",
@@ -602,6 +445,20 @@
 		},
 		{
 			"name": "create Group Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c8116356-6eb2-4bb7-b3de-c670941e82f6",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "POST",
 				"header": [],
@@ -662,7 +519,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "http://localhost:3000/foca/groups",
+					"raw": "http://localhost:3000/foca/groups?",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -805,12 +662,6 @@
 					"script": {
 						"id": "e021316c-b543-4806-acee-cd6270f94873",
 						"exec": [
-							"pm.test(\"Test obtaining the groups array\", function () {",
-							"    var jsonData = pm.response.json();",
-							"    pm.expect(jsonData).to.have.a.property(\"id\");",
-							"    ",
-							"});",
-							"",
 							"pm.test(\"Status code is 200\", function () {",
 							"    pm.response.to.have.status(200);",
 							"});"

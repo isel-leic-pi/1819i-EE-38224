@@ -39,26 +39,34 @@ describe('test foca', () => {
                   done()
               })
             }
-    ) 
+    )
 
    it('should get teams by competition id', done => {
         const focaaux = foca.init(es)
         focaaux
-            .getTeamsByCompetitionId('2000')
+            .getTeamsByCompetitionId('2001')
             .then( resp => {
                     should.exist(resp)
                     expect(resp)
                     .to.be.have.a.property('teams')
                     .with
-                    .length(32)
+                    .length(79)
                 expect(resp.teams[0])
                     .to.have.a
-                    .property('id', 758)
+                    .property('id', 2)
                     done()
                 })
             
     })
+	
 
+	
+	/*
+	err ao criar grupo que ja exista
+	teste n deixa inserir duplicado
+	teste de cópia
+	*/
+	
    /* it('Should create a group and manage it', done => {
         const focaaux = foca.init(es)
         focaaux.createGroup('Favoritos', 'equipas favoritas', (err, resp) => {

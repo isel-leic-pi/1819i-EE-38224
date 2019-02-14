@@ -14,7 +14,7 @@ class Foca {
 	 * @param {* callback functio} cb
 	 * URL -> POST http://localhost:3000/foca/groups?name={name}&description={discription}
 	 */
-    createGroup(name, description) {
+    createGroup(user_id,name, description) {
 	    let id // = 123; // cria o endereço 123 para testes, e testes posteriores adiciona um indice gerado ao calhas
 	
         do{
@@ -26,26 +26,31 @@ class Foca {
       return Promise.resolve({'id': id})
     }
 	
-	getGroupById(id){
+	createGroupCopy(user_id,id,name) {
+		let grp =foca.groups.find( g =>g.id == id)
+		if(!grp) return Promise.reject({statusCode:404})
+		let grpName = foca.groups.find( g => g.name === name)
+		if(grpName) return Promise.reject({statusCode:409})
+		let id2
+        do{
+            id2 = Math.floor(Math.random() * 99999999)
+        }while(foca.groups[id2])
+    
+        foca
+            .groups.push({'id':id2,'name': name, 'description': grp.description, 'teams': grp.teams})
+      return Promise.resolve({'id': id2})
+    }
+	
+	getGroupById(user_id,id){
         var xx;
         foca.groups.forEach(x=> {
-            if(x.id == id){
-                console.log(x)
+            if(x.id == id)
                 xx = x
-            }
         })
         return Promise.resolve(xx)
 	}
 
-    /**
-	 *  Edit a specific group (name and description) on foda-db.js
-	 * @param {* group id} id
-	 * @param {* group name} name
-	 * @param {* group description} description
-	 * @param {* callback funtion} cb
-	 * URL -> PUT http://localhost:3000/foca/groups/{group_id}?name={name}&description={discription}
-	 */
-    editGroup(id, name, description) {
+    editGroup(user_id,id, name, description) {
        // console.log('METODO editGroup FOI CHAMADO')
        var xx
        foca.groups.forEach(x=> {
@@ -57,58 +62,24 @@ class Foca {
        }) 
      return  Promise.resolve(xx)
     }
-
-    /**
-	 * Insert team on a group
-	 * @param {* Id of a specific competition } competitionId
-	 * @param {* Id of a specific competion group} groupdId
-	 * @param {* Id of team that i want to insert} team
-	 * @param {* callback Function} cb
-	 * @param {* group where the team will inserted } groupName
-	 * URL -> POST  http://localhost:3000/foca/groups/{group_id}/Teams/{Team_id}?name={groupName}
-	 */
-    insertGroupTeam(groupId, competitionId, teamId, cb) {
-        // 1º Get a competition 2º Get a team from a specific competetion 3º Insert this
-        // team to a specific group on FOCA
-        //console.log('METODO  insertGroupTeam FOI CHAMADO')
-	
-        //gettin a team from a competition
-        competitionTeams.competitions.forEach(comp => {
-            if (comp.competition.id == competitionId) {
-                comp
-                    .teams
-                    .forEach(team => {
-                       
-                        
-                        if (team.id == teamId) {
-							foca
-							.groups
-							.forEach(group => {
-								if (group.id == groupId) {
-									/*
-									let i = 0;
-									let alreadyIn = false;
-									for(i;group.teams && i<group.teams.length;i++){
-										if(group.teams[i].id == team.id){
-											alreadyIn = true;
-										}
-									}
-									if(!alreadyIn){
-										group
-											.teams
-											.push(JSON.stringify(team))
-									}
-									*/
-									group
-										.teams
-										.push(team)
-								}
-							})
-                        }
-                    })
-            }
+   
+    insertTeamInGroup(user_id,groupId, competitionId, teamId) { // assuming we are using league: 2001 
+		let teamR
+		competitionTeams.teams.forEach(team => {
+			if (team.id == teamId) {
+				foca
+				.groups
+				.forEach(group => {
+					if (group.id == groupId) {
+						group
+							.teams
+							.push(team)
+						teamR = team
+					}
+				})
+			}
         })
-        cb(null, foca); // to show the inserted team
+        return  Promise.resolve({'id': teamR.id})
     }
 
     /**
@@ -118,7 +89,7 @@ class Foca {
 	 * @param {* callback Function} cb
 	 * URL -> DELETE http://localhost:3000/foca/groups/{group_id}/Team/{Team_id}?name={groupName}
 	 */
-    deleteGroupTeam(groupId, teamId, cb) {
+    deleteGroupTeam(user_id,groupId, teamId, cb) {
         // 1º Get a competition 2º Get a team from a specific competetion 3º delete this
         // team to a specific group on FOCA
         //console.log('METODO  deleteGroupTeam FOI CHAMADO')
@@ -142,7 +113,7 @@ class Foca {
 	 * @param {* callback funtion} cb
 	 * URL -> GET http://localhost:3000/foca/groups
 	 */
-    getGroups(cb) {
+    getGroups(user_id,cb) {
         return (!foca.groups)
          ? Promise.reject({statusCode: 404})
          : Promise.resolve(foca)
@@ -182,9 +153,10 @@ class Foca {
             reject({statusCode: 404})
         }
     })
-
     }
-
+	
+	getAllGamesBetweenTwoDates(user_id,groupId,dateFrom,dateTo)
+	
 }
 // ------------------CREATE GROUP SECTION
 // --------------------------------------------//
@@ -1339,15 +1311,5 @@ const competitionTeams = {
     }
   ]
 }
-
-/*
-● Gerir grupos de equipas favoritas  -> criar um indice
-○ Criar grupo atribuindo-lhe um nome e descrição -> Metodo Create para inserir um grupo no indice previamente criado
-○ Editar grupo, alterando o seu nome e descrição -> UPDATE/PUT de
-○ Adicionar uma equipa a um grupo -> INSERT/POST uma equipa num grupo através do Id do grupo
-○ Remover uma equipa de um grupo -> DELETE uma equipa de um grupo através de um Id
-○ Obter os jogos das equipas de um grupo entre duas datas, sendo essas datas parametrizáveis no pedido.
-	Os jogos de todas as equipas do um grupo vêm ordenados por ordem cronológica.
-*/
 
 module.exports = Foca
