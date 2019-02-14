@@ -306,7 +306,7 @@
 			"response": []
 		},
 		{
-			"name": "Criar grupo com nome e descrição",
+			"name": "CreateGroup",
 			"event": [
 				{
 					"listen": "test",
@@ -390,6 +390,54 @@
 						"foca",
 						"groups",
 						"{{groupId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CreateGroup must fail with 409",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "2b07f2f5-5076-4a3f-b95a-c5e148b09b34",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(409);",
+							"}); "
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:3000/foca/groups?name={{groupName}}&description={{groupDescription}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"foca",
+						"groups"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "{{groupName}}"
+						},
+						{
+							"key": "description",
+							"value": "{{groupDescription}}"
+						}
 					]
 				}
 			},
@@ -541,19 +589,13 @@
 			"response": []
 		},
 		{
-			"name": "Editar grupo alterando nome e descrição",
+			"name": "create Group Copy Must Fail with 409",
 			"event": [
 				{
 					"listen": "test",
 					"script": {
-						"id": "c5c14ab6-c1c4-4029-bf32-6da63e6404bf",
+						"id": "c8116356-6eb2-4bb7-b3de-c670941e82f6",
 						"exec": [
-							"pm.test(\"Test obtaining the groups array\", function () {",
-							"    var jsonData = pm.response.json();",
-							"    pm.expect(jsonData).to.have.a.property(\"id\");",
-							"    ",
-							"});",
-							"",
 							"pm.test(\"Status code is 200\", function () {",
 							"    pm.response.to.have.status(200);",
 							"});"
@@ -563,14 +605,14 @@
 				}
 			],
 			"request": {
-				"method": "PUT",
+				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
 					"raw": ""
 				},
 				"url": {
-					"raw": "http://localhost:3000/foca/groups/{{groupId}}?name={{newGroupName}}&description={{newGroupDescription}}",
+					"raw": "http://localhost:3000/foca/groups/{{groupId}}/copy/{{groupId}}_new",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -579,17 +621,9 @@
 					"path": [
 						"foca",
 						"groups",
-						"{{groupId}}"
-					],
-					"query": [
-						{
-							"key": "name",
-							"value": "{{newGroupName}}"
-						},
-						{
-							"key": "description",
-							"value": "{{newGroupDescription}}"
-						}
+						"{{groupId}}",
+						"copy",
+						"{{groupId}}_new"
 					]
 				}
 			},
@@ -648,6 +682,110 @@
 						{
 							"key": "dateTo",
 							"value": "{{dateTo}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Edit Group with name & description",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c5c14ab6-c1c4-4029-bf32-6da63e6404bf",
+						"exec": [
+							"pm.test(\"Test obtaining the groups array\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.have.a.property(\"id\");",
+							"    ",
+							"});",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:3000/foca/groups/{{groupId}}?name={{newGroupName}}&description={{newGroupDescription}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"foca",
+						"groups",
+						"{{groupId}}"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "{{newGroupName}}"
+						},
+						{
+							"key": "description",
+							"value": "{{newGroupDescription}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Edit Group with name & description must fail with 409",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "cd5b6636-8807-4b7f-91d5-2e7218c9f694",
+						"exec": [
+							"pm.test(\"Status code is 409\", function () {",
+							"    pm.response.to.have.status(409);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:3000/foca/groups/{{groupId}}?name={{groupId}}_new&description={{newGroupDescription}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"foca",
+						"groups",
+						"{{groupId}}"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "{{groupId}}_new"
+						},
+						{
+							"key": "description",
+							"value": "{{newGroupDescription}}"
 						}
 					]
 				}

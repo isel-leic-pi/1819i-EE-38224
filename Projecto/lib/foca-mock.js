@@ -21,8 +21,9 @@ class Foca {
             id = Math.floor(Math.random() * 99999999);
         }while(foca.groups[id]);
     
-        foca
-            .groups.push({'id':id,'name': name, 'description': description, 'teams': []})
+		let grp = foca.groups.find( g => g.name === name)
+		if(grp) return Promise.reject({statusCode:409})
+        foca.groups.push({'id':id,'name': name, 'description': description, 'teams': []})
       return Promise.resolve({'id': id})
     }
 	
@@ -52,6 +53,7 @@ class Foca {
 
     editGroup(user_id,id, name, description) {
        // console.log('METODO editGroup FOI CHAMADO')
+ 
        var xx
        foca.groups.forEach(x=> {
            if(x.id == id){
