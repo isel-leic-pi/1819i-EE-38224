@@ -179,6 +179,10 @@ module.exports =  async (divMain) => {
 		else{
 			fetch(`http://localhost:3000/foca/groups/${inputGroupId.value}/competition/${competitionId.value}/team/${inputTeamId.value}`, {method: 'POST'})
 				.then(res => {
+					if(res.status == '500'){
+						util.showAlert('não foi encontrada essa equipa nessa competição')
+						return Promise.reject('não foi encontrada essa equipa nessa competição')
+					}
 					if(res.status == '409'){
 						util.showAlert('já existe essa equipa neste grupo')
 						return Promise.reject('já existe essa equipa neste grupo')
