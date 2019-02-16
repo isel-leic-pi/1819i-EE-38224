@@ -50,11 +50,8 @@ module.exports = async (divMain) => {
 	}
 	
    function showMatches(matches){
-	   const headers = '<table class="table"><thead><tr><th>Id do Jogo</th><th>Competição</th><th>Equipa da Casa</th><th>Equipa de Fora</th><th>Data</th><th>Estado</th></tr></thead><tbody>'
-	   let data = ''
-	   matches.forEach(element => {
-	   data+=searchResultsView({element})
-		})
-	   return headers + data + '</tbody></table>'
+	 
+	   let data =searchResultsView({matches}) 
+	   return data
    }
 }

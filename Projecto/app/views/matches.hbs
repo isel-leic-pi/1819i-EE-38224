@@ -1,10 +1,26 @@
-{{#each this}}
-	<tr>
-		<td>{{id}}</td>
-		<td>{{competition}}</td>
-		<td>{{homeTeam}}</td>
-		<td>{{awayTeam}}</td>
- 		<td>{{date}}</td>
-		<td>{{status}}</td>
-	</tr>	
-{{/each}}
+<table class="table">
+	<thead>
+		<tr>
+			<th>Id do Jogo</th>
+			<th>Competição</th>
+			<th>Equipa da Casa</th>
+			<th>Equipa de Fora</th>
+			<th>Data</th>
+			<th>Estado</th>
+		</tr>
+	</thead>
+<tbody>
+	{{#each .}}
+		{{#each .}}
+			<tr>
+				<td>{{id}}</td>
+				<td>{{competition}}</td>
+				<td>{{homeTeam}}</td>
+				<td>{{awayTeam}}</td>
+				<td>{{date}}</td>
+				<td>{{status}}</td>
+			</tr>	
+		{{/each}}
+	{{/each}}
+	</tbody>
+</table>
