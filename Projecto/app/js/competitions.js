@@ -22,6 +22,7 @@ module.exports = (divMain) => {
 					util.showAlert('o serviço está em baixo')
 					return Promise.reject(new Error('o serviço está em baixo'))
 				}
+				return res.json()
 			})
 			.then(arr => divSearchResults.innerHTML = searchCompetitions(arr.competitions))
 			.catch(err => console.log(err))

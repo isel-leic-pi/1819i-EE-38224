@@ -127,9 +127,7 @@ class Foca {
 				.reduce((accumulator, currentvalue) => accumulator.concat(currentvalue))
 				.sort((matchesX,matchesY)=> (new Date(matchesX.date)- new Date(matchesY.date)))
 		)
-		.catch(err=>
-				Promise.reject({statusCode:503}
-		))
+ 
 	}
 }
 

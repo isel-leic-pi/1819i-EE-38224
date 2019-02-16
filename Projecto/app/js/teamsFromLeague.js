@@ -21,6 +21,7 @@ module.exports = (divMain) => {
 		ev.preventDefault()
 		if(!inputCompId.value){
 		util.showAlert('por favor introduza um identificador de competição')
+		return Promise.reject('por favor introduza um identificador de competição')
 		}
 		const compId = inputCompId.value
 		fetch(`http://localhost:3000/competitions/${compId}/teams`)

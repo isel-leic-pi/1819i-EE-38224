@@ -96,8 +96,7 @@ class FootballData {
                         'status':m.status
                     })
                 })
-
-                
+				
                 return matches
             })
             .catch()

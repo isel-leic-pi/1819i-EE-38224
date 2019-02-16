@@ -38,7 +38,13 @@ module.exports = async (divMain) => {
 			const dateTo = inputdateTo.value 
 			fetch(`http://localhost:3000/foca/groups/${groupId}/matches?dateFrom=${dateFrom}&dateTo=${dateTo}`)
 				.then(res => res.json())
-				.then(obj => divSearchResults.innerHTML = showMatches(obj))
+				.then(obj => {
+					if(obj.length == 0){
+						util.showAlert('não existem jogos para estas equipas neste intervalo')
+						return Promise.reject('não existem jogos para estas equipas neste intervalo')
+					}
+					return divSearchResults.innerHTML = showMatches(obj)
+				})
 				.catch(err => console.log(err))
 		}
 	}
